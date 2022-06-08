@@ -5,7 +5,7 @@ export default async (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization) {
     return res.status(401).json({
-      errros: ['Login required'],
+      errors: ['Você precisa se autenticar antes de acessar esta rota'],
     });
   }
 
@@ -18,15 +18,15 @@ export default async (req, res, next) => {
     const user = await User.findOne({ where: { id, email } });
     if (!user) {
       return res.status(401).json({
-        errros: ['Usuário inválido'],
+        errors: ['Usuário inválido'],
       });
     }
-    req.userID = id;
-    req.userEmail = email;
+    req.userID = user.id;
+    req.userEmail = user.email;
     return next();
   } catch (e) {
     return res.status(401).json({
-      errros: ['Token expirado ou inválido'],
+      errors: ['Token expirado ou inválido'],
     });
   }
 };

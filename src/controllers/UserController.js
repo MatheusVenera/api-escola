@@ -16,7 +16,7 @@ class UserController {
 
   // Mostrar todos os usuários
 
-  async index(req, res) {
+  async listarUsuarios(req, res) {
     try {
       const listaUsuarios = await User.findAll({ attributes: ['id', 'nome', 'email'] });
       return res.json(listaUsuarios);
@@ -35,7 +35,7 @@ class UserController {
       const user = await User.findByPk(id);
       if (!user) {
         return res.status(400).json({
-          errros: ['Usuário não encontrado'],
+          errors: ['Usuário não encontrado'],
         });
       }
       const { nome, email } = user;
@@ -52,7 +52,7 @@ class UserController {
       const user = await User.findByPk(req.userID);
       if (!user) {
         return res.status(400).json({
-          errros: ['Usuário não cadastrado'],
+          errors: ['Usuário não cadastrado'],
         });
       }
       const novoUsuario = await user.update(req.body);
@@ -71,7 +71,7 @@ class UserController {
       const user = await User.findByPk(req.userID);
       if (!user) {
         return res.status(400).json({
-          errros: ['Usuário não cadastrado'],
+          errors: ['Usuário não cadastrado'],
         });
       }
 

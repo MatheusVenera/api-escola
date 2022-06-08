@@ -7,19 +7,19 @@ class TokenController {
 
     if (!email || !password) {
       return res.status(401).json({
-        errros: ['Credenciais inválidas'],
+        errors: ['Credenciais inválidas'],
       });
     }
     const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(401).json({
-        errros: ['Usuário não encontrado'],
+        errors: ['Usuário não encontrado'],
       });
     }
 
     if (!(await user.passwordIsValid(password))) {
       return res.status(401).json({
-        errros: ['Senha inválida'],
+        errors: ['Senha inválida'],
       });
     }
     const { id } = user;
