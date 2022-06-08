@@ -5,7 +5,8 @@ class UserController {
   async create(req, res) {
     try {
       const novoUser = await User.create(req.body);
-      return res.json(novoUser);
+      const { id, nome, email } = novoUser;
+      return res.json({ id, nome, email });
     } catch (e) {
       return res.status(400).json({
         errors: e.errors.map((err) => err.message),
@@ -17,7 +18,7 @@ class UserController {
 
   async index(req, res) {
     try {
-      const listaUsuarios = await User.findAll();
+      const listaUsuarios = await User.findAll({ attributes: ['id', 'nome', 'email'] });
       return res.json(listaUsuarios);
     } catch (e) {
       return res.status(400).json({
@@ -37,7 +38,8 @@ class UserController {
           errros: ['Usuário não encontrado'],
         });
       }
-      return res.json(user);
+      const { nome, email } = user;
+      return res.json({ id, nome, email });
     } catch (e) {
       return res.status(400).json({
         errors: e.errors.map((err) => err.message),
@@ -47,21 +49,15 @@ class UserController {
 
   async updateUser(req, res) {
     try {
-      const { id } = req.params;
-      if (!id) {
-        return res.status(400).json({
-          errros: ['Você precisa passar um ID'],
-        });
-      }
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(req.userID);
       if (!user) {
         return res.status(400).json({
           errros: ['Usuário não cadastrado'],
         });
       }
       const novoUsuario = await user.update(req.body);
-
-      return res.json(novoUsuario);
+      const { id, nome, email } = novoUsuario;
+      return res.json({ id, nome, email });
     } catch (e) {
       return res.status(400).json({
         errors: e.errors.map((err) => err.message),
@@ -72,13 +68,7 @@ class UserController {
   // Deletar usuário pelo ID
   async deleteUserById(req, res) {
     try {
-      const { id } = req.params;
-      if (!id) {
-        return res.status(400).json({
-          errros: ['Você precisa passar um ID'],
-        });
-      }
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(req.userID);
       if (!user) {
         return res.status(400).json({
           errros: ['Usuário não cadastrado'],
