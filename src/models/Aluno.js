@@ -71,4 +71,10 @@ export default class Aluno extends Model {
     });
     return this;
   }
+
+  // Método presente no Model Foto, ambas as formas estão corretas
+  // Foto pertence ao aluno ou aluno tem foto
+  static associate(models) {
+    this.hasMany(models.Foto, { foreignKey: 'aluno_id' });
+  }
 }

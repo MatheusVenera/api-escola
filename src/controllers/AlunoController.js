@@ -1,4 +1,5 @@
 import Aluno from '../models/Aluno';
+import Foto from '../models/Foto';
 
 class AlunoController {
   async createAluno(req, res) {
@@ -19,7 +20,14 @@ class AlunoController {
 
   async listarAlunos(req, res) {
     try {
-      const listaAlunos = await Aluno.findAll();
+      const listaAlunos = await Aluno.findAll({
+        attributes: ['id', 'nome', 'sobrenome', 'email', 'idade', 'peso', 'altura'],
+        order: [['id', 'DESC'], [Foto, 'id', 'DESC']],
+        include: {
+          model: Foto,
+          attributes: ['id', 'url', 'filename'],
+        },
+      });
       return res.status(200).json(listaAlunos);
     } catch (e) {
       return res.status(400).json({
@@ -36,7 +44,14 @@ class AlunoController {
           errors: ['Você precisa informar o ID do aluno'],
         });
       }
-      const aluno = await Aluno.findByPk(id);
+      const aluno = await Aluno.findByPk(id, {
+        attributes: ['id', 'nome', 'sobrenome', 'email', 'idade', 'peso', 'altura'],
+        order: [['id', 'DESC'], [Foto, 'id', 'DESC']],
+        include: {
+          model: Foto,
+          attributes: ['id', 'url', 'filename'],
+        },
+      });
       if (!aluno) {
         return res.status(400).json({
           errors: ['Aluno não encontrado'],
@@ -45,9 +60,7 @@ class AlunoController {
       const {
         nome, sobrenome, email, idade, peso, altura,
       } = aluno;
-      return res.status(200).json({
-        id, email, nome, sobrenome, idade, peso, altura,
-      });
+      return res.status(200).json(aluno);
     } catch (e) {
       return res.status(400).json({
         errors: e.errors.map((err) => err.message),
@@ -97,7 +110,7 @@ class AlunoController {
           errors: ['Aluno não encontrado'],
         });
       }
-      aluno.destroy();
+      await aluno.destroy();
       return res.status(200).json('Aluno excluído com sucesso');
     } catch (e) {
       return res.status(400).json({
