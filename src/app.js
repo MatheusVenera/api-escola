@@ -20,6 +20,7 @@ class App {
     this.routes();
   }
 
+  // add cors e helmet
   middlewares() {
     this.app.user(cors());
     this.app.user(helmet());
